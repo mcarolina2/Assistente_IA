@@ -20,4 +20,19 @@ Este projeto é um **assistente virtual inteligente** integrado aos principais c
 
 ## 📂 Estrutura do Projeto
 
-
+- Assistente_IA/
+│
+├── backend/ # Backend com FastAPI
+│ ├── main.py # Ponto de entrada da API
+│ ├── routes/ # Rotas para webhooks
+│ ├── services/ # Lógica de negócio e integração com IA
+│ ├── database/ # Conexão e modelos do banco
+│
+├── streamlit_app/ # Interface gráfica
+│ ├── dashboard.py
+│ ├── pages/
+│
+├── tests/ # Testes automatizados
+├── requirements.txt # Dependências
+├── .env # Variáveis de ambiente (API keys)
+└── README.md
