@@ -1,0 +1,188 @@
+body {
+  background: linear-gradient(#002e98, #195fff 100%);}
+
+header {
+	background: #195fff;
+	padding: 0px 0;}
+
+.box {
+	position: relative;
+	width: 999px;
+	margin: 0 auto;}
+
+nav {
+	position: absolute;
+	top: 5px;
+	right: 2;}
+
+nav li {
+	display: inline;
+	margin: 0 0 0 20px;}
+
+nav a {
+	text-transform: uppercase;
+	color: #ffffff;
+	font-weight: bold;
+	font-size: 12px;
+	text-decoration: none;
+	text-shadow: 0px 0px 0px rgba(0,0,0,0.5);}
+
+nav a:hover {
+	color: #000000;
+	text-decoration:none;
+}
+
+body {
+
+	font-family: 'Creato Display', sans-serif;}
+
+hr {
+  display: block;
+  margin-top: 8em;
+  margin-left: auto;
+  margin-right: auto;
+  border-style: inset;
+  border-width: 1px;}
+
+footer {
+	text-align: center;
+	padding: 50px 0;}
+
+.copyright {
+	color: #ffffff;
+	font-size: 13px;
+	margin-top: 20px;}
+
+
+/*** Index da Sally (index.html) ***/
+
+
+
+.section-main, .box {
+	padding: 2em 0;
+	margin: 0 auto;}
+
+.section-main {
+	color: #ffffff;
+	width: 940px;}
+
+.section-main p {
+	margin: 0 0 1em;
+	color: #ffffff;
+	clear: left;
+	line-height: 1.3;}
+
+
+
+.section-main strong {
+
+	font-weight: bold;}
+
+
+.section-main-title {
+	text-align: left;
+	font-size: 2em;
+	margin: 0 0 1em;
+	clear: left;
+	text-shadow: 0px 0px 0px rgba(0,0,0,0.5);}
+
+.section-main-title:first-letter {
+	font-size: 1.5em;
+	font-weight: bold;}
+
+.logotipo-sally {
+	width: 0px;
+	float: left;
+	margin: 0 1em 1em 0;}
+.logotipo-sally {
+
+	width: 50%;
+	opacity: 1;
+	box-shadow: 0px 0px 0px rgba(0,0,0,0.5);
+	transition: 400ms; }
+
+
+.logotipo-topo {
+
+	width: 10%;
+	opacity: 1;
+	box-shadow: 0px 0px 0px rgba(0,0,0,0.5);
+	transition: 400ms; }
+/* === CHAT LATERAL === */
+/* Container lateral fixo */
+.chat-lateral {
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+    width: 350px;
+    height: 500px;
+    background-color: #002e98;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Cabeçalho */
+.chat-lateral h2 {
+    background-color: #195fff;
+    color: #fff;
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+    font-size: 18px;
+}
+
+/* Área das mensagens */
+.chat-box {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    font-size: 14px;
+    color: #000;
+    background-color: #002e98;
+    word-wrap: break-word; /* evita texto estourar a caixa */
+    overflow-wrap: break-word; /* idem, compatível com navegadores modernos */
+}
+
+/* Área do input e botão */
+.chat-input-area {
+    display: flex;
+    gap: 5px;
+    padding: 8px;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+}
+
+.chat-input-area input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.chat-input-area button {
+    padding: 8px 12px;
+    background-color: #195fff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.chat-input-area button:hover {
+    background-color: #002e98;
+}
+
+/* Responsivo: adapta em telas pequenas */
+@media screen and (max-width: 600px) {
+    .chat-lateral {
+        position: fixed;
+        right: 10px;
+        bottom: 10px;
+        width: 90%;
+        height: 400px;
+    }
+}

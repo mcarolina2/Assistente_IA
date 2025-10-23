@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sally | Assistente Virtual</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div id="sfcgsb84u4j61a1gw713ft2sek3rbfqmsqj"></div>
+    <script type="text/javascript" src="https://counter7.stat.ovh/private/counter.js?c=gsb84u4j61a1gw713ft2sek3rbfqmsqj&down=async" async></script>
+
+    <div class="box">
+        <nav>
+            <ul class="navegacao">
+                <li><a href="https://salaacoes.blogspot.com/">Voltar ao Blog</a></li>
+                <li><a href="https://api.whatsapp.com/send?phone=5583987168376&text=Olá,%20desejo%20agendar%20um%20atendimento." target="_blank">WhatsApp da Sally</a></li>         
+                <li><a href="http://t.me/SallyUFPBbot" target="_blank">Sally no Telegram</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <section class="section-main">
+            <img class="logotipo-sally" src="static/img/logotipo-sally-2.png" alt="Sally">
+
+            <p>Olá, eu sou a <strong>Sally</strong>, a Assistente Virtual da Sala de Ações - UFPB.<br>
+            Fui criada com o objetivo de ajudar você a entender com facilidade assuntos referentes a Educação Financeira.</p>
+
+            <!-- Caixa lateral do chat -->
+            <div class="chat-lateral">
+                <h2>Para iniciarmos a nossa conversa, digite Oi!</h2>
+                <div class="chat-box" id="chat-box"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="user-input" placeholder="Digite sua mensagem...">
+                    <button onclick="sendMessage()">Enviar</button>
+                </div>
+            </div>
+
+
+
+            <script>
+                const userId = "user_" + Date.now();
+
+                async function sendMessage() {
+                    const input = document.getElementById("user-input");
+                    const message = input.value;
+                    if (!message) return;
+
+                    document.getElementById("chat-box").innerHTML += `<p><b>Você:</b> ${message}</p>`;
+                    input.value = "";
+
+                    const response = await fetch("/chat", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ message: message, userId })
+                    });
+
+                    const data = await response.json();
+                    document.getElementById("chat-box").innerHTML += `<p><b>Sally:</b> ${data.response}</p>`;
+
+                    const chatBox = document.getElementById("chat-box");
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            </script>
+
+        </section>
+    </main>
+
+    <footer>
+        <br><br><br>
+        <a href="https://salaacoes.blogspot.com/"> 
+            <img src="static/img/logotipo-sala-f.png" width="128" height="71">
+        </a>
+        <a href="https://www.ufpb.br/"> 
+            <img src="static/img/logotipo-ufpb-f.png" width="50" height="71">
+        </a>
+        <a href="https://www.instagram.com/labimec/"> 
+            <img src="static/img/logotipo-labimec.png" width="50" height="71">
+        </a>
+        <p class="copyright">&copy; Copyright - Sala de Ações - 2021</p>
+    </footer>
+
+</body>
+</html>

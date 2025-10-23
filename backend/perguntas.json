@@ -1,0 +1,15 @@
+{
+  "perguntas_iniciais": [
+    { "texto": "Olá, sou a Sally e estou aqui para te ajudar! Tudo bem com você?", "obrigatoria": false },
+    { "texto": "Pode me informar um telefone para contato?", "obrigatoria": true },
+    { "texto": "Pode me informar qual a sua ocupação profissional?", "obrigatoria": true },
+    { "texto": "Pode me informar a sua formação? (Ensino Fundamental Completo, Ensino Médio Completo, Ensino Superior Completo, Pós-Graduando ou Pós-Graduado)", "obrigatoria": true },
+    { "texto": "Como você ficou sabendo do Escritório Financeiro? (Blog Sala de Ações, Instagram, Facebook, E-mail, Youtube, Site da UFPB, Anúncios na Universidade ou Por amigos ou participantes)", "obrigatoria": false },
+    { "texto": "Me diz por gentileza o que te motivou a procurar consultoria no nosso Escritório Financeiro? (Estou endividado(a), Não Consigo Poupar, Tenho curiosidade pelo tema, Um amigo me recomendou, Minha empresa está quebrando, Estou montando um negócio, Estou fazendo um projeto ou Outro)", "obrigatoria": false },
+    { "texto": "Objetivos: Marque as principais dúvidas (Finanças Pessoais, Soluções de Dívidas, Outras modalidades de EDUCAÇÃO FINANCEIRA, Sistema Financeiro Nacional, Análise Fundamentalista, Análise Gráfica, Valuation - Preço Justo, Investimentos, Tesouro Direto, Renda Fixa, Mercado de Ações, Mercado de Derivativos, Criptomoedas, Teoria Macroeconômica e Análise de Conjuntura ou Outros)", "obrigatoria": false },
+    { "texto": "Você pode descrever em mais detalhes os seus objetivos no Escritório Financeiro.", "obrigatoria": false },
+    { "texto": "O agendamento é para quantas pessoas? (Só eu, 2, 5 ou menos, 10 ou menos, 15 ou menos ou Outro)", "obrigatoria": true },
+    { "texto": "Quais destes horários você deseja ser atendido? (Quarta-Feira 14:00, Quarta-Feira 15:00, Quarta-Feira 16:00, Quarta-Feira 17:00)", "obrigatoria": true },
+    { "texto": "Você quer sugerir um outro horário a Combinar? (Determine o horário desejando apresentando até 3 alternativas)", "obrigatoria": false }
+  ]
+}
