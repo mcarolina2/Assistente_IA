@@ -112,9 +112,9 @@ footer {
 /* Container lateral fixo */
 .chat-lateral {
     position: fixed;
-    right: 40px;
-    bottom: 40px;
-    width: 350px;
+    right: 80px;
+    bottom: 240px;
+    width: 400px;
     height: 500px;
     background-color: #002e98;
     border-radius: 15px;
