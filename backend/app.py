@@ -1,19 +1,28 @@
 from flask import Flask, request, jsonify, render_template
 import requests, os, json, pandas as pd, time
 from datetime import datetime
+import markdown
 
 app = Flask(__name__)
 
-# 🔑 chave do Grok (defina no .env)
+# 🔑 chave do Groq (defina no .env)
 API_KEY = os.getenv("XAI_API_KEY")
 
-# 🧠 Função para chamar o Grok (modelo IA)
-def chamar_grok(perguntas):
-    headers = {"Authorization": f"Bearer {API_KEY}"}
-    payload = {
-        "model": "openai/gpt-oss-20b",
-        "messages": [{"role": "user", "content": "\n".join(perguntas)}]
+# 🧠 Função para chamar o Groq (modelo IA)
+def chamar_groq(perguntas):
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
     }
+
+    payload = {
+        "model": "openai/gpt-oss-20b",  # ✅ modelo correto do Groq
+        "messages": [
+            {"role": "system", "content": "Você é a Sally, uma assistente amigável e didática."},
+            {"role": "user", "content": "\n".join(perguntas)}
+        ]
+    }
+
     try:
         resp = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
@@ -21,11 +30,9 @@ def chamar_grok(perguntas):
             json=payload,
             timeout=20
         )
-    except Exception as e:
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
         return f"Erro na requisição: {e}"
-
-    if resp.status_code != 200:
-        return f"Erro na API: {resp.status_code} - {resp.text}"
 
     data = resp.json()
     try:
@@ -33,29 +40,38 @@ def chamar_grok(perguntas):
     except (KeyError, IndexError):
         return "Desculpe, houve um problema ao gerar a resposta."
 
+
 # 🔹 Carrega perguntas iniciais
 with open("perguntas.json", "r", encoding="utf-8") as f:
     perguntas_data = json.load(f)
 perguntas = perguntas_data["perguntas_iniciais"]
 
-usuarios = {}  # dados das conversas
+usuarios = {}
 
-# 🔹 Página inicial
 @app.route("/")
 def home():
     return render_template("index.html")
 
-
-# 🔹 Função para validar respostas obrigatórias
-def resposta_valida(resposta):
-    # Exemplo simples: não vazia
-    return bool(resposta.strip())
-
-
-# 🔹 Função opcional para responder perguntas fora do fluxo
-def responder_pergunta_geral(pergunta):
-    return chamar_grok([pergunta])
-
+# 🔹 Função para validar respostas por tipo
+def resposta_valida_por_tipo(resposta, tipo):
+    resposta = resposta.strip()
+    if tipo == "sim_nao":
+        return resposta.lower() in ["sim", "não", "nao"]
+    elif tipo == "telefone":
+        numeros = "".join(filter(str.isdigit, resposta))
+        return len(numeros) >= 8
+    elif tipo == "texto":
+        return bool(resposta)
+    elif tipo == "formacao":
+        opcoes = [
+            "Ensino Fundamental Completo", "Ensino Médio Completo",
+            "Ensino Superior Completo", "Pós-Graduando", "Pós-Graduado"
+        ]
+        return any(op.lower() in resposta.lower() for op in opcoes)
+    elif tipo == "opcao_multipla":
+        return bool(resposta)
+    else:
+        return bool(resposta)
 
 # 🔹 Função para salvar histórico em Excel
 def salvar_excel(user_id, historico):
@@ -63,16 +79,23 @@ def salvar_excel(user_id, historico):
     caminho_pasta = "conversas"
     os.makedirs(caminho_pasta, exist_ok=True)
     caminho_arquivo = os.path.join(caminho_pasta, f"conversa_{user_id}.xlsx")
-    
     for tentativa in range(3):
         try:
             df.to_excel(caminho_arquivo, index=False)
-            print(f"✅ Arquivo salvo em {caminho_arquivo}")
             break
         except PermissionError:
             print("⚠️ Arquivo está em uso. Feche o Excel e tente novamente...")
             time.sleep(2)
     return caminho_arquivo
+
+# 🔹 Carrega perguntas iniciais
+with open("perguntas.json", "r", encoding="utf-8") as f:
+    perguntas_data = json.load(f)
+perguntas = perguntas_data["perguntas_iniciais"]
+
+usuarios = {}
+
+# 🔹 Chat endpoint
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.json
@@ -89,7 +112,7 @@ def chat():
 
     usuario = usuarios[user_id]
 
-    # Salva a fala do usuário
+    # Salva mensagem do usuário
     usuario["historico"].append({
         "quem": "Usuário",
         "mensagem": mensagem,
@@ -97,41 +120,41 @@ def chat():
     })
 
     # 🔹 Se houver pergunta obrigatória pendente
-    # 🔹 Verifica se há pergunta obrigatória pendente
     if usuario["pergunta_atual"]:
-        # Se o usuário enviou uma pergunta fora do roteiro
+            # Se o usuário enviou uma pergunta fora do roteiro
         if "?" in mensagem:
-            resposta_grok = chamar_grok([mensagem])
+            # Responde à pergunta do usuário fora do fluxo
+            resposta_usuario = chamar_groq([mensagem])
             usuario["historico"].append({
                 "quem": "Sally",
-                "mensagem": resposta_grok,
+                "mensagem": resposta_usuario,
                 "hora": datetime.now().strftime("%H:%M:%S")
             })
             salvar_excel(user_id, usuario["historico"])
-            # Retorna resposta do Grok e repete a pergunta obrigatória
+            
+            # Retorna a resposta + repete a pergunta pendente
+            pergunta_pendente = usuario["pergunta_atual"]["texto"]
             return jsonify({
-                "response": f"{resposta_grok}\n\nPor favor, responda: {usuario['pergunta_atual']['texto']}"
+                "response": f"{resposta_usuario}\n\nPor favor, responda corretamente: {pergunta_pendente}"
             })
 
-        # Se não for pergunta, valida a resposta
-        if resposta_valida(mensagem):
+    # Se não for pergunta, valida a resposta
+  # Se não for pergunta, valida a resposta
+    if usuario["pergunta_atual"]:
+        tipo_resposta = usuario["pergunta_atual"].get("tipo", "texto")  # pega tipo definido ou assume texto
+        if resposta_valida_por_tipo(mensagem, tipo_resposta):
             usuario["respostas"].append(mensagem)
             usuario["pergunta_atual"] = None
         else:
-            # Repete a pergunta obrigatória
+            pergunta_pendente = usuario["pergunta_atual"]["texto"]
             return jsonify({
-                "response": f"Por favor, responda: {usuario['pergunta_atual']['texto']}"
+                "response": f"Por favor, responda corretamente: {pergunta_pendente}"
             })
-
-        salvar_excel(user_id, usuario["historico"])
-        return jsonify({"response": resposta_grok})
-
-    # 🔹 Segue fluxo do roteiro de perguntas
+    # 🔹 Próxima pergunta do roteiro
     if usuario["indice"] < len(perguntas):
         proxima_pergunta = perguntas[usuario["indice"]]
         usuario["indice"] += 1
 
-        # Se a próxima pergunta for obrigatória
         if proxima_pergunta.get("obrigatoria", False):
             usuario["pergunta_atual"] = proxima_pergunta
 
@@ -156,5 +179,6 @@ def chat():
     })
     salvar_excel(user_id, usuario["historico"])
     return jsonify({"response": resposta_final})
+
 if __name__ == "__main__":
     app.run(debug=True)
