@@ -16,7 +16,7 @@ def chamar_groq(perguntas):
     }
 
     payload = {
-        "model": "openai/gpt-oss-20b",  # ✅ modelo correto do Groq
+        "model": "llama-3.3-70b-versatile",  # ✅ modelo correto do Groq openai/gpt-oss-20b
         "messages": [
             {"role": "system", "content": "Você é a Sally, uma assistente amigável e didática."},
             {"role": "user", "content": "\n".join(perguntas)}
