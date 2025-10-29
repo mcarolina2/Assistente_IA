@@ -1,44 +1,29 @@
 from flask import Flask, request, jsonify, render_template
 import requests, os, json, pandas as pd, time
 from datetime import datetime
-import markdown
+from groq import Groq
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
-# 🔑 chave do Groq (defina no .env)
-API_KEY = os.getenv("XAI_API_KEY")
+load_dotenv()
+client = Groq(api_key=os.getenv("XAI_API_KEY"))
 
-# 🧠 Função para chamar o Groq (modelo IA)
+
 def chamar_groq(perguntas):
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "model": "llama-3.3-70b-versatile",  # ✅ modelo correto do Groq openai/gpt-oss-20b
-        "messages": [
-            {"role": "system", "content": "Você é a Sally, uma assistente amigável e didática."},
-            {"role": "user", "content": "\n".join(perguntas)}
-        ]
-    }
-
     try:
-        resp = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers=headers,
-            json=payload,
-            timeout=20
+        completion = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": "Você é a Sally, uma assistente amigável e didática."},
+                {"role": "user", "content": "\n".join(perguntas)}
+            ],
+            temperature=0.5,
+            max_completion_tokens=512,
         )
-        resp.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        return f"Erro na requisição: {e}"
-
-    data = resp.json()
-    try:
-        return data["choices"][0]["message"]["content"]
-    except (KeyError, IndexError):
-        return "Desculpe, houve um problema ao gerar a resposta."
+        return completion.choices[0].message.content
+    except Exception as e:
+        return f"Erro ao chamar Groq: {e}"
 
 
 # 🔹 Carrega perguntas iniciais
