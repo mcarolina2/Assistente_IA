@@ -1,0 +1,18 @@
+<rail version="0.1">
+
+  <output>
+    <string
+        name="resposta"
+        description="Resposta da assistente Sally"
+    >
+        <validators>
+            <RegexMatch
+                pattern="(investir em ações|criptomoeda|renda|ganhar dinheiro)"
+                on_fail="replace"
+                replacement="Desculpe, não posso responder sobre esse assunto. Fale com um humano no WhatsApp 👉 https://api.whatsapp.com/send?phone=5583987168376"
+            />
+        </validators>
+    </string>
+  </output>
+
+</rail>
